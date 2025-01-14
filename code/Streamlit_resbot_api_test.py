@@ -87,8 +87,8 @@ num_trains = 0
 print(data['Departure'][i]['stop'])
 st.subheader(data['Departure'][i]['stop'].replace(" (Stockholm kn)",""))
 print("")
-print('To city center')
-st.markdown("##### To city center")
+print('to T-Centralen"')
+st.markdown("##### to T-Centralen")
 
 
 for x in data:
@@ -135,9 +135,7 @@ if num_trains < 1:
     
     
 print("")
-print(data['Departure'][i]['stop'])
-print('From city center)')
-st.markdown("##### From city center")
+st.markdown("##### from city")
 i=0
 num_trains = 0
 for x in data:
