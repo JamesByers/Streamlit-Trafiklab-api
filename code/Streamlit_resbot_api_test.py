@@ -136,7 +136,6 @@ if num_trains < 1:
     
 print("")
 print(data['Departure'][i]['stop'])
-st.subheader(data['Departure'][i]['stop'])
 print('From city center)')
 st.markdown("##### From city center")
 i=0
@@ -270,7 +269,6 @@ if num_trains < 1:
 print("Nätgränd (Stockholm kn)")
 print("")
 print('Direction 2')
-st.subheader("Nätgränd (Stockholm kn)")
 st.markdown("##### to Motalavägen")
 #try:
 #    print(data['Departure'][i]['stop'])
