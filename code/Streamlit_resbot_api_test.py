@@ -57,7 +57,7 @@ print("Stockholm time: ", stockholm_time.strftime(fmt))
 #st.markdown("*Refresh browser to update*")
 #print("Current Stockholm time:   ", ct)
 
-update_time_string = "Last updated: " + stockholm_time.strftime(fmt) + "(Stockholm time)"
+update_time_string = "Last updated: " + stockholm_time.strftime(fmt) + "      (Stockholm time)"
 html_str = f"""
     <style>
     p.a {{
