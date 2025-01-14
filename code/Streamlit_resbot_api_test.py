@@ -53,8 +53,8 @@ subHoursNumber = 9;
 stockholm_time = ct + relativedelta(hours=subHoursNumber)
 fmt = "%Y-%m-%d %H:%M %p"
 print("Stockholm time: ", stockholm_time.strftime(fmt))
-st.write("Last updated: ", stockholm_time.strftime(fmt), "(Stockholm time)")
-st.markdown("*Refresh browser to update*")
+#st.write("Last updated: ", stockholm_time.strftime(fmt), "(Stockholm time)")
+#st.markdown("*Refresh browser to update*")
 #print("Current Stockholm time:   ", ct)
 
 update_time_string = "Last updated: " + stockholm_time.strftime(fmt) + "(Stockholm time)"
@@ -68,7 +68,7 @@ html_str = f"""
     p.b {{
       margin-left: 30px;
     }} 
-    p.b {{
+    p.c {{
       font-style: italic;
       margin-left: 30px;
     }}                          
