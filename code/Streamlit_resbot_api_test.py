@@ -237,7 +237,7 @@ for x in data:
 
                     temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
                     temp_direction = data['Departure'][i]['direction']
-                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace("Stockholm ","")
+                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace("Stockholm ","").replace("Tengdahlsgatan","österut")
                     cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
                     html_str = f"""
                         <style>
@@ -288,7 +288,7 @@ for x in data:
 
                     temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
                     temp_direction = data['Departure'][i]['direction']
-                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace("Stockholm ","")
+                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace("Stockholm ","").replace("Motalavägen","väster") 
                     cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
                     font_size = 14  #st.slider("Enter a font size", 1, 300, value=30)
                     html_str = f"""
