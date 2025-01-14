@@ -230,7 +230,6 @@ for x in data:
             if "Buss" in data['Departure'][i]['name']:
                     cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '')
                     cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
-                    cleaned_tunnelbana_markdown = "**Foo**"
                     print(cleaned_tunnelbana, ', ', data['Departure'][i]['date'], cleaned_time)
                     print("  ", "directionFlag: ", data['Departure'][i]['directionFlag'].strip())
                     print("  ", "Direction: ", data['Departure'][i]['direction'])
@@ -278,7 +277,7 @@ for x in data:
     try:
         if data['Departure'][i]['directionFlag'].strip() == '2':
             if "Buss" in data['Departure'][i]['name']:
-                    cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '')
+                    cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '').replace("Stockholm ","")
                     cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
                     print(cleaned_tunnelbana, ', ', data['Departure'][i]['date'], cleaned_time)
                   
