@@ -280,7 +280,7 @@ print("Nätgränd (Stockholm kn)")
 print("")
 print('Direction 2')
 st.subheader("Nätgränd (Stockholm kn)")
-st.markdown("##### to Matalavagen")
+st.markdown("##### to Motalavägen")
 #try:
 #    print(data['Departure'][i]['stop'])
 #except:
