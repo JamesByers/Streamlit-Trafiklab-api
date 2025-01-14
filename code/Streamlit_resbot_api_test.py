@@ -85,7 +85,7 @@ data = data_skanstull
 i=0
 num_trains = 0
 print(data['Departure'][i]['stop'])
-st.subheader(data['Departure'][i]['stop'])
+st.subheader(data['Departure'][i]['stop'].replace(" (Stockholm kn)",""))
 print("")
 print('To city center')
 st.markdown("##### To city center")
@@ -266,7 +266,7 @@ if num_trains < 1:
     
     
      
-print("Nätgränd (Stockholm kn)")
+print("Nätgränd")
 print("")
 print('Direction 2')
 st.markdown("##### to Motalavägen")
@@ -282,7 +282,6 @@ for x in data:
             if "Buss" in data['Departure'][i]['name']:
                     cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '')
                     cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
-                    cleaned_tunnelbana_markdown = "**Foo**"
                     print(cleaned_tunnelbana, ', ', data['Departure'][i]['date'], cleaned_time)
                   
                     print("  ", "directionFlag: ", data['Departure'][i]['directionFlag'].strip())
