@@ -206,8 +206,8 @@ try:
     print("Nätgränd (Stockholm kn)")
     st.subheader("Nätgränd (Stockholm kn)")
     #print("")
-    print('To city center')
-    st.markdown("#### To city center")
+    print('Direction 1')
+    st.markdown("#### Direction 1")
 except:
     ""
     #print("No bus stop data)avaialble")
@@ -257,7 +257,7 @@ if num_trains < 1:
      
 print("Nätgränd (Stockholm kn)")
 print("")
-print('From city center')
+print('Direction 2')
 st.subheader("Nätgränd (Stockholm kn)")
 st.markdown("#### From city center")
 #try:
