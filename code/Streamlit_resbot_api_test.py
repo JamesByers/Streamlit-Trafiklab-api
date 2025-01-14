@@ -22,7 +22,7 @@ def get_values_from_nested_dict(response_dict):
         else:
             values.append(value)
     return values
-st.title("Jess' Custom transit board web POC")
+st.title("Jess' ustom transit board web POC")
 
 # Define the API endpoint
 url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duratoin-60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=60&id=740021655'
@@ -54,7 +54,7 @@ stockholm_time = ct + relativedelta(hours=subHoursNumber)
 fmt = "%Y-%m-%d %H:%M %p"
 print("Stockholm time: ", stockholm_time.strftime(fmt))
 st.write("Last updated: ", stockholm_time.strftime(fmt), "(Stockholm time)")
-st.markdown("#### *Refresh browser to update*")
+st.markdown("*Refresh browser to update*")
 #print("Current Stockholm time:   ", ct)
 
 data = data_skanstull
