@@ -238,7 +238,7 @@ for x in data:
 
                     temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
                     temp_direction = data['Departure'][i]['direction']
-                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction']
+                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "")
                     html_str = f"""
                         <style>
                         p.a {{
@@ -288,7 +288,7 @@ for x in data:
 
                     temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
                     temp_direction = data['Departure'][i]['direction']
-                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction']
+                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "")
                     font_size = 14  #st.slider("Enter a font size", 1, 300, value=30)
                     html_str = f"""
                         <style>
