@@ -25,7 +25,7 @@ def get_values_from_nested_dict(response_dict):
 st.title("Jess' web transit board POC")
 
 # Define the API endpoint
-url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duratoin-60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=60&id=740021655'
+url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duratoin-60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=120&id=740021655'
 #url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=20&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=60&id=740021655'
 
 # Send a GET request to the API
