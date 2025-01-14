@@ -51,7 +51,7 @@ values = get_values_from_nested_dict(data_skanstull)
 ct = datetime.datetime.now()
 subHoursNumber = 1;
 stockholm_time = ct + relativedelta(hours=subHoursNumber)
-fmt = "%Y-%m-%d %H:%M %I %p"
+fmt = "%Y-%m-%d %H:%M"
 print("Stockholm time: ", stockholm_time.strftime(fmt))
 #st.write("Last updated: ", stockholm_time.strftime(fmt), "(Stockholm time)")
 #st.markdown("*Refresh browser to update*")
