@@ -219,7 +219,7 @@ try:
     st.subheader("Nätgränd busshållplats")
     #print("")
     print('Direction 1')
-    st.markdown("##### österutto to Stockholm Tengdahisgatan")
+    st.markdown("##### österutto to Tengdahisgatan")
 except:
     ""
     #print("No bus stop data)avaialble")
