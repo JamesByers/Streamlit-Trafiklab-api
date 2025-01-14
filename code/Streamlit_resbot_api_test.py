@@ -120,9 +120,6 @@ for x in data:
                         }}                          
                         </style>
                         <p class="a">{variable_output}</p>
-
-                        <p class="b">Direction - {temp_direction}</p>
-                        <p class="b">Direction flag =  {temp_direction_flag}</p>
                         """
                     st.markdown(html_str, unsafe_allow_html=True)
                     #st.write("")
@@ -172,9 +169,6 @@ for x in data:
                         }}                          
                         </style>
                         <p class="a">{variable_output}</p>
-
-                        <p class="b">Direction - {temp_direction}</p>
-                        <p class="b">Direction flag = {temp_direction_flag}</p>
                         """
                     st.markdown(html_str, unsafe_allow_html=True)
                     #st.write("")
@@ -260,9 +254,6 @@ for x in data:
                         }}                          
                         </style>
                         <p class="a">{variable_output}</p>
-
-                        <p class="b">Direction - {temp_direction}</p>
-                        <p class="b">Direction flag =  {temp_direction_flag}</p>
                         """
                     st.markdown(html_str, unsafe_allow_html=True)
                     #st.write("")
@@ -315,9 +306,6 @@ for x in data:
                         }}                          
                         </style>
                         <p class="a">{variable_output}</p>
-
-                        <p class="b">Direction - {temp_direction}</p>
-                        <p class="b">Direction flag = {temp_direction_flag}</p>
                         """
                     st.markdown(html_str, unsafe_allow_html=True)
                     #st.write("")
