@@ -88,7 +88,7 @@ print(data['Departure'][i]['stop'])
 st.subheader(data['Departure'][i]['stop'])
 print("")
 print('To city center')
-st.markdown("#### To city center")
+st.markdown("##### To city center")
 
 
 for x in data:
@@ -141,7 +141,7 @@ print("")
 print(data['Departure'][i]['stop'])
 st.subheader(data['Departure'][i]['stop'])
 print('From city center)')
-st.markdown("#### From city center")
+st.markdown("##### From city center")
 i=0
 num_trains = 0
 for x in data:
@@ -228,7 +228,7 @@ try:
     st.subheader("Nätgränd (Stockholm kn)")
     #print("")
     print('Direction 1')
-    st.markdown("#### to Stockholm Tengdahisgatan")
+    st.markdown("##### to Stockholm Tengdahisgatan")
 except:
     ""
     #print("No bus stop data)avaialble")
