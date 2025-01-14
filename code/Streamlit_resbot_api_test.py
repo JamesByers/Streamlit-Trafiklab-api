@@ -49,7 +49,7 @@ else:
 values = get_values_from_nested_dict(data_skanstull)
 
 ct = datetime.datetime.now()
-subHoursNumber = 9;
+subHoursNumber = 1;
 stockholm_time = ct + relativedelta(hours=subHoursNumber)
 fmt = "%Y-%m-%d %H:%M %I %p"
 print("Stockholm time: ", stockholm_time.strftime(fmt))
