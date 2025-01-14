@@ -216,7 +216,7 @@ try:
     #print(data['Departure'][i]['stop'])
     #st.subheader(data['Departure'][i]['stop'])
     print("Nätgränd (Stockholm kn)")
-    st.subheader("Nätgränd")
+    st.subheader("Nätgränd busshållplats")
     #print("")
     print('Direction 1')
     st.markdown("##### to Stockholm Tengdahisgatan")
