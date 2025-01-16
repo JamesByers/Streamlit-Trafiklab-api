@@ -6,9 +6,7 @@ Created on Sun Jan 12 18:17:04 2025
 """
 
 import requests
-#import ast
 import datetime;
-#from pytz import timezone
 from dateutil.relativedelta import relativedelta
 import streamlit as st
 
@@ -40,7 +38,7 @@ if response.status_code == 200:
     data_skanstull_str = str(data_skanstull)
     # Replace single quotes with double quotes
     data_skanstull_str = data_skanstull_str.replace("'", '"')
-    print(data_skanstull)
+    #print(data_skanstull)
 
 else:
     print("Failed to fetch data. Status code: {response.status_code}")
@@ -87,9 +85,8 @@ num_trains = 0
 print(data['Departure'][i]['stop'])
 st.subheader(data['Departure'][i]['stop'].replace(" (Stockholm kn)",""))
 print("")
-print('to T-Centralen"')
+print('to T-Centralen')
 st.markdown("##### to T-Centralen")
-
 
 for x in data:
     try:
@@ -97,16 +94,13 @@ for x in data:
             if "Tunnelbana" in data['Departure'][i]['name']:
                     cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '')
                     cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
-                    cleaned_tunnelbana_markdown = "**Foo**"
-                    print(cleaned_tunnelbana, ', ', data['Departure'][i]['date'], cleaned_time)
-                  
-                    print("  ", "directionFlag: ", data['Departure'][i]['directionFlag'].strip())
-                    print("  ", "Direction: ", data['Departure'][i]['direction'])
-                    print("")
-
                     temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
                     temp_direction = data['Departure'][i]['direction']
                     variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "")
+                    variable_output_2 = data['Departure'][i]['Product'][0]['operator'] + ' ' + data['Departure'][i]['Product'][0]['operatorCode']
+                    print(variable_output, end="   ")                   
+                    print(variable_output_2)
+                    print("")
                     font_size = 14  #st.slider("Enter a font size", 1, 300, value=30)
                     html_str = f"""
                         <style>
@@ -129,36 +123,33 @@ for x in data:
     i = i + 1
     
 if num_trains < 1:
-    st.write("No trains at this time")    
+    st.write("No trains at this time")       
     
-    
-    
-    
-print("")
-st.markdown("##### from city")
 i=0
 num_trains = 0
+print("")
+print('from city')
+st.markdown("##### from city")
+
 for x in data:
     try:
         if data['Departure'][i]['directionFlag'].strip() == '2':
             if "Tunnelbana" in data['Departure'][i]['name']:
                     cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '')
                     cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
-                    cleaned_tunnelbana_markdown = "**Foo**"
-                    print(cleaned_tunnelbana, ', ', data['Departure'][i]['date'], cleaned_time)
-                  
-                    print("  ", "directionFlag: ", data['Departure'][i]['directionFlag'].strip())
-                    print("  ", "Direction: ", data['Departure'][i]['direction'])
-                    print("")
-
                     temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
                     temp_direction = data['Departure'][i]['direction']
                     variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "")
+                    variable_output_2 = data['Departure'][i]['Product'][0]['operator'] + ' ' + data['Departure'][i]['Product'][0]['operatorCode']
+                    print(variable_output, end="   ")                   
+                    print(variable_output_2)
+                    print("")
                     font_size = 14  #st.slider("Enter a font size", 1, 300, value=30)
                     html_str = f"""
                         <style>
                         p.a {{
                           font-weight: bold;
+                          color:green;
                           margin-left: 15px;
                         }}
                         p.b {{
@@ -173,9 +164,9 @@ for x in data:
     except:
         ""
     i = i + 1
-
+    
 if num_trains < 1:
-    st.write("No trains at this time")    
+    st.write("No trains at this time")       
 
 
 # Define the API endpoint
@@ -222,7 +213,6 @@ try:
     st.markdown("##### österutto to Tengdahisgatan")
 except:
     ""
-    #print("No bus stop data)avaialble")
 
 for x in data:
     try:
@@ -230,15 +220,14 @@ for x in data:
             if "Buss" in data['Departure'][i]['name']:
                     cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '')
                     cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
-                    print(cleaned_tunnelbana, ', ', data['Departure'][i]['date'], cleaned_time)
-                    print("  ", "directionFlag: ", data['Departure'][i]['directionFlag'].strip())
-                    print("  ", "Direction: ", data['Departure'][i]['direction'])
-                    print("")
-
                     temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
                     temp_direction = data['Departure'][i]['direction']
-                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace("Stockholm ","").replace("Tengdahlsgatan","österut")
-                    cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
+                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace('Stockholm Tengdahlsgatan','österut').replace('Motalavägen','väster')
+                    variable_output_2 = data['Departure'][i]['Product'][0]['operator'] + ' ' + data['Departure'][i]['Product'][0]['operatorCode']
+                    print(variable_output, end="   ")                   
+                    print(variable_output_2)
+                    print("")
+                    font_size = 14  #st.slider("Enter a font size", 1, 300, value=30)
                     html_str = f"""
                         <style>
                         p.a {{
@@ -260,7 +249,7 @@ for x in data:
     i = i + 1
     
 if num_trains < 1:
-    st.write("No buss data available")    
+    st.write("No Buss data available")   
     
     
      
@@ -268,33 +257,27 @@ print("Nätgränd")
 print("")
 print('Direction 2')
 st.markdown("##### väster to Motalavägen")
-#try:
-#    print(data['Departure'][i]['stop'])
-#except:
-#    print("No buss data availalble")
 i=0
 num_trains = 0
 for x in data:
     try:
         if data['Departure'][i]['directionFlag'].strip() == '2':
             if "Buss" in data['Departure'][i]['name']:
-                    cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '').replace("Stockholm ","")
+                    cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '')
                     cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
-                    print(cleaned_tunnelbana, ', ', data['Departure'][i]['date'], cleaned_time)
-                  
-                    print("  ", "directionFlag: ", data['Departure'][i]['directionFlag'].strip())
-                    print("  ", "Direction: ", data['Departure'][i]['direction'])
-                    print("")
-
                     temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
                     temp_direction = data['Departure'][i]['direction']
-                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace("Stockholm ","").replace("Motalavägen","väster") 
-                    cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
+                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace('Stockholm Tengdahlsgatan','österut').replace('Motalavägen','väster')
+                    variable_output_2 = data['Departure'][i]['Product'][0]['operator'] + ' ' + data['Departure'][i]['Product'][0]['operatorCode']
+                    print(variable_output, end="   ")                   
+                    print(variable_output_2)
+                    print("")
                     font_size = 14  #st.slider("Enter a font size", 1, 300, value=30)
                     html_str = f"""
                         <style>
                         p.a {{
                           font-weight: bold;
+                          color:green;
                           margin-left: 15px;
                         }}
                         p.b {{
@@ -309,6 +292,6 @@ for x in data:
     except:
         ""
     i = i + 1
-
+    
 if num_trains < 1:
     st.write("No Buss data available")    
