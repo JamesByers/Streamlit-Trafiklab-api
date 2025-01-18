@@ -23,7 +23,7 @@ def get_values_from_nested_dict(response_dict):
 st.title("Jess' departure board POC")
 
 # Define the API endpoint
-url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duratoin-60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=120&id=740021655'
+url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=120&id=740021655'
 #url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=20&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=60&id=740021655'
 
 # Send a GET request to the API
@@ -42,7 +42,6 @@ if response.status_code == 200:
 
 else:
     print("Failed to fetch data. Status code: {response.status_code}")
-    
 
 values = get_values_from_nested_dict(data_skanstull)
 
@@ -51,9 +50,6 @@ subHoursNumber = 1;
 stockholm_time = ct + relativedelta(hours=subHoursNumber)
 fmt = "%Y-%m-%d %H:%M"
 print("Stockholm time: ", stockholm_time.strftime(fmt))
-#st.write("Last updated: ", stockholm_time.strftime(fmt), "(Stockholm time)")
-#st.markdown("*Refresh browser to update*")
-#print("Current Stockholm time:   ", ct)
 
 update_time_string = "Last updated: " + stockholm_time.strftime(fmt) + "      (Stockholm time)"
 html_str = f"""
@@ -216,7 +212,7 @@ except:
 
 for x in data:
     try:
-        if data['Departure'][i]['directionFlag'].strip() == '1':
+        if data['Departure'][i]['directionFlag'] == '1':
             if "Buss" in data['Departure'][i]['name']:
                     cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '')
                     cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
@@ -227,7 +223,7 @@ for x in data:
                     print(variable_output, end="   ")                   
                     print(variable_output_2)
                     print("")
-                    font_size = 14  #st.slider("Enter a font size", 1, 300, value=30)
+                    #font_size = 14  #st.slider("Enter a font size", 1, 300, value=30)
                     html_str = f"""
                         <style>
                         p.a {{
@@ -245,7 +241,7 @@ for x in data:
                     #st.write("")
                     num_trains = num_trains + 1
     except:
-        ""
+        pass
     i = i + 1
     
 if num_trains < 1:
