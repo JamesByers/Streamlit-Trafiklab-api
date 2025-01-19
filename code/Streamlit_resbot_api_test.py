@@ -119,7 +119,25 @@ for x in data:
     i = i + 1
     
 if num_trains < 1:
-    st.write("No trains at this time")       
+    #st.write("No trains at this time")
+    html_str = f"""
+        <style>
+        p.a {{
+          font-weight: bold;
+          color:green;
+          margin-left: 15px;
+        }}
+        p.b {{
+          margin-left: 30px;
+        }}
+        }}
+        p.c {{
+          margin-left: 15px;
+        }}                    
+        </style>
+        <p class="c">No trains at this time</p>
+    """
+    st.markdown(html_str, unsafe_allow_html=True)       
     
 i=0
 num_trains = 0
@@ -162,7 +180,25 @@ for x in data:
     i = i + 1
     
 if num_trains < 1:
-    st.write("No trains at this time")       
+    st.write("No trains at this time")
+    html_str = f"""
+        <style>
+        p.a {{
+          font-weight: bold;
+          color:green;
+          margin-left: 15px;
+        }}
+        p.b {{
+          margin-left: 30px;
+        }}
+        }}
+        p.c {{
+          margin-left: 15px;
+        }}                    
+        </style>
+        <p class="c">No trains at this time</p>
+    """
+    st.markdown(html_str, unsafe_allow_html=True)         
 
 
 # Define the API endpoint
@@ -262,7 +298,7 @@ if num_trains < 1:
         }}                    
         </style>
         <p class="c">No Buss data available</p>
-        """
+    """
     st.markdown(html_str, unsafe_allow_html=True)
     
      
@@ -307,4 +343,23 @@ for x in data:
     i = i + 1
     
 if num_trains < 1:
-    st.write("No Buss data available")    
+    #st.write("No Buss data available")    
+    html_str = f"""
+        <style>
+        p.a {{
+          font-weight: bold;
+          color:green;
+          margin-left: 15px;
+        }}
+        p.b {{
+          margin-left: 30px;
+        }}
+        }}
+        p.c {{
+          margin-left: 15px;
+        }}                    
+        </style>
+        <p class="c">No Buss data available</p>
+     """
+    st.markdown(html_str, unsafe_allow_html=True)
+    
