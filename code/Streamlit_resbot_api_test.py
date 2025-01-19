@@ -107,7 +107,7 @@ for x in data:
                         }}
                         p.b {{
                           margin-left: 30px;
-                        }}                          
+                        }}                       
                         </style>
                         <p class="a">{variable_output}</p>
                         """
@@ -115,7 +115,7 @@ for x in data:
                     #st.write("")
                     num_trains = num_trains + 1
     except:
-        ""
+        pass
     i = i + 1
     
 if num_trains < 1:
@@ -158,7 +158,7 @@ for x in data:
                     #st.write("")
                     num_trains = num_trains + 1
     except:
-        ""
+        pass
     i = i + 1
     
 if num_trains < 1:
@@ -245,8 +245,25 @@ for x in data:
     i = i + 1
     
 if num_trains < 1:
-    st.write("No Buss data available")   
-    
+    #st.write("No Buss data available")   
+    html_str = f"""
+        <style>
+        p.a {{
+          font-weight: bold;
+          color:green;
+          margin-left: 15px;
+        }}
+        p.b {{
+          margin-left: 30px;
+        }}
+        }}
+        p.c {{
+          margin-left: 15px;
+        }}                    
+        </style>
+        <p class="c">No Buss data available</p>
+        """
+    st.markdown(html_str, unsafe_allow_html=True)
     
      
 print("Nätgränd")
@@ -286,7 +303,7 @@ for x in data:
                     #st.write("")
                     num_trains = num_trains + 1
     except:
-        ""
+        pass
     i = i + 1
     
 if num_trains < 1:
