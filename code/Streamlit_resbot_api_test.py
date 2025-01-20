@@ -180,7 +180,7 @@ for x in data:
     i = i + 1
     
 if num_trains < 1:
-    st.write("No trains at this time")
+    #st.write("No trains at this time")
     html_str = f"""
         <style>
         p.a {{
