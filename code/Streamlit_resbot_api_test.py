@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+poc# -*- coding: utf-8 -*-
 """
 Created on Sun Jan 12 18:17:04 2025
 
@@ -20,7 +20,7 @@ def get_values_from_nested_dict(response_dict):
         else:
             values.append(value)
     return values
-st.title("Jess' departure board POC")
+st.title("Jess' departure board")
 
 # Define the API endpoint
 url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=120&id=740021655'
@@ -362,4 +362,5 @@ if num_trains < 1:
         <p class="c">No Buss data available</p>
      """
     st.markdown(html_str, unsafe_allow_html=True)
+
     
