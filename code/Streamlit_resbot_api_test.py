@@ -20,7 +20,7 @@ def get_values_from_nested_dict(response_dict):
         else:
             values.append(value)
     return values
-#st.title("Jess' departure board")
+st.title("Jess' departure board")
 
 # Define the API endpoint
 url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=120&id=740021655'
@@ -364,5 +364,6 @@ if num_trains < 1:
     st.markdown(html_str, unsafe_allow_html=True)
 
     
+
 
 
