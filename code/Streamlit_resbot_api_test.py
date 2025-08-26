@@ -47,7 +47,7 @@ else:
 values = get_values_from_nested_dict(data_skanstull)
 
 ct = datetime.datetime.now()
-subHoursNumber = 1;
+subHoursNumber = 0;
 stockholm_time = ct + relativedelta(hours=subHoursNumber)
 fmt = "%Y-%m-%d %H:%M"
 print("Stockholm time: ", stockholm_time.strftime(fmt))
@@ -365,6 +365,7 @@ if num_trains < 1:
     st.markdown(html_str, unsafe_allow_html=True)
 
     
+
 
 
 
