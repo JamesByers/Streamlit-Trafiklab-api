@@ -48,14 +48,14 @@ else:
 
 values = get_values_from_nested_dict(data_skanstull)
 
-ct = datetime.now()
-stockholm_time = ct + relativedelta(hours=2)
+#ct = datetime.now()
+#stockholm_time = ct + relativedelta(hours=2)
 stockholm_tz = pytz.timezone('Europe/Stockholm')
 now_in_stockholm = datetime.now(stockholm_tz)
 fmt = "%Y-%m-%d %H:%M"
 #print("Stockholm time now: ", now_in_stockholm.strftime(fmt))
 
-update_time_string = "Last updated is: " + now_in_stockholm.strftime(fmt) + "      (Stockholm time)"
+update_time_string = "Last updated: " + now_in_stockholm.strftime(fmt) + "      (Stockholm time)"
 html_str = f"""
     <style>
     p.a {{
@@ -368,6 +368,7 @@ if num_trains < 1:
     st.markdown(html_str, unsafe_allow_html=True)
 
     
+
 
 
 
