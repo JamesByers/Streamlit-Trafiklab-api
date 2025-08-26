@@ -20,6 +20,7 @@ def get_values_from_nested_dict(response_dict):
         else:
             values.append(value)
     return values
+
 st.title("Jess' departure board")
 
 # Define the API endpoint
@@ -364,6 +365,7 @@ if num_trains < 1:
     st.markdown(html_str, unsafe_allow_html=True)
 
     
+
 
 
 
