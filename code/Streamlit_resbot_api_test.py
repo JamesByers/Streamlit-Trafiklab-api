@@ -8,7 +8,7 @@ Created on Sun Jan 12 18:17:04 2025
 import requests
 #import datetime;
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
+#from dateutil.relativedelta import relativedelta
 import pytz
 import streamlit as st
 
@@ -26,6 +26,7 @@ def get_values_from_nested_dict(response_dict):
 st.title("Jess' departure board")
 
 # Define the API endpoint
+
 url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=120&id=740021655'
 #url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=20&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=60&id=740021655'
 
@@ -206,7 +207,10 @@ if num_trains < 1:
 
 
 # Define the API endpoint
-url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&id=740046211&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633'
+#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&id=740051247&id=740009262'
+# API Endpoint for Svandammsplan bus stop
+url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&id=740051247'
+#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&id=740046211&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633'
 #url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=20&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=60&id=740021655'
 
 # Define the API endpoint
@@ -243,10 +247,12 @@ try:
     #print(data['Departure'][i]['stop'])
     #st.subheader(data['Departure'][i]['stop'])
     print("Nätgränd (Stockholm kn)")
-    st.subheader("Nätgränd busshållplats")
+    #st.subheader("Nätgränd busshållplats")
+    st.subheader("Svandammsplan busshållplats")
     #print("")
     print('Direction 1')
-    st.markdown("##### österutto to Tengdahisgatan")
+    #st.markdown("##### österutto to Tengdahisgatan")
+    st.markdown("##### Mot Liljeholmen")
 except:
     ""
 
@@ -309,7 +315,8 @@ if num_trains < 1:
 print("Nätgränd")
 print("")
 print('Direction 2')
-st.markdown("##### väster to Motalavägen")
+#st.markdown("##### väster to Motalavägen")
+st.markdown("##### Mot Hökmossen / Älvsjö")
 i=0
 num_trains = 0
 for x in data:
