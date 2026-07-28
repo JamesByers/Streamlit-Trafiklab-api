@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jan 12 18:17:04 2025
+updated on July 27 23:53:04 2026
 
 @author: BYERJ023
 """
@@ -26,8 +26,10 @@ def get_values_from_nested_dict(response_dict):
 st.title("Jess' departure board")
 
 # Define the API endpoint
-
-url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=120&id=740021655'
+url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&id=740004121'
+#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&id=740009262'
+#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=120&id=740009262'
+#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=120&id=740021655'
 #url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=20&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=60&id=740021655'
 
 # Send a GET request to the API
@@ -37,15 +39,12 @@ response = requests.get(url)
 if response.status_code == 200:
     # Parse the JSON data
     data_skanstull = response.json()
-    # Convert dictionary to string
-    #print(data_skanstull)
     data_skanstull_str = str(data_skanstull)
-    # Replace single quotes with double quotes
     data_skanstull_str = data_skanstull_str.replace("'", '"')
-    #print(data_skanstull)
-
 else:
-    print("Failed to fetch data. Status code: {response.status_code}")
+    print(f"Failed to fetch data. Status code: {response.status_code}")
+    st.error(f"Failed to fetch Tunnelbana data. API returned status: {response.status_code}")
+    st.stop()  # This safely halts the Streamlit app so it doesn't crash on line 50
 
 values = get_values_from_nested_dict(data_skanstull)
 
@@ -86,10 +85,12 @@ num_trains = 0
 print(data['Departure'][i]['stop'])
 st.subheader(data['Departure'][i]['stop'].replace(" (Stockholm kn)",""))
 print("")
-print('to T-Centralen')
-st.markdown("##### to T-Centralen")
+#print('to T-Centralen')
+#st.markdown("##### to T-Centralen")
+print('Mot Mörby centrum / Ropsten')
+st.markdown("##### Mot Mörby centrum / Ropsten")
 
-for x in data:
+for x in data['Departure']:
     try:
         if data['Departure'][i]['directionFlag'].strip() == '1':
             if "Tunnelbana" in data['Departure'][i]['name']:
@@ -147,10 +148,12 @@ if num_trains < 1:
 i=0
 num_trains = 0
 print("")
-print('from city')
-st.markdown("##### from city")
+#print('from city')
+#st.markdown("##### from city")
+print('Mot Fruängen')
+st.markdown("##### Mot Fruängen")
 
-for x in data:
+for x in data['Departure']:
     try:
         if data['Departure'][i]['directionFlag'].strip() == '2':
             if "Tunnelbana" in data['Departure'][i]['name']:
@@ -246,7 +249,8 @@ num_trains = 0
 try:
     #print(data['Departure'][i]['stop'])
     #st.subheader(data['Departure'][i]['stop'])
-    print("Nätgränd (Stockholm kn)")
+    #print("Nätgränd (Stockholm kn)")
+    print("Svandammsplan (Stockholm kn)")
     #st.subheader("Nätgränd busshållplats")
     st.subheader("Svandammsplan busshållplats")
     #print("")
@@ -256,7 +260,7 @@ try:
 except:
     ""
 
-for x in data:
+for x in data['Departure']:
     try:
         if data['Departure'][i]['directionFlag'] == '1':
             if "Buss" in data['Departure'][i]['name']:
@@ -264,7 +268,8 @@ for x in data:
                     cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
                     temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
                     temp_direction = data['Departure'][i]['direction']
-                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace('Stockholm Tengdahlsgatan','österut').replace('Motalavägen','väster')
+#                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace('Stockholm Tengdahlsgatan','österut').replace('Motalavägen','väster')
+                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "")
                     variable_output_2 = data['Departure'][i]['Product'][0]['operator'] + ' ' + data['Departure'][i]['Product'][0]['operatorCode']
                     print(variable_output, end="   ")                   
                     print(variable_output_2)
@@ -312,14 +317,15 @@ if num_trains < 1:
     st.markdown(html_str, unsafe_allow_html=True)
     
      
-print("Nätgränd")
+#print("Nätgränd")
+print("Svandammsplan (Stockholm kn)")
 print("")
 print('Direction 2')
 #st.markdown("##### väster to Motalavägen")
 st.markdown("##### Mot Hökmossen / Älvsjö")
 i=0
 num_trains = 0
-for x in data:
+for x in data['Departure']:
     try:
         if data['Departure'][i]['directionFlag'].strip() == '2':
             if "Buss" in data['Departure'][i]['name']:
@@ -327,7 +333,8 @@ for x in data:
                     cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
                     temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
                     temp_direction = data['Departure'][i]['direction']
-                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace('Stockholm Tengdahlsgatan','österut').replace('Motalavägen','väster')
+                    #variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace('Stockholm Tengdahlsgatan','österut').replace('Motalavägen','väster')
+                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "")
                     variable_output_2 = data['Departure'][i]['Product'][0]['operator'] + ' ' + data['Departure'][i]['Product'][0]['operatorCode']
                     print(variable_output, end="   ")                   
                     print(variable_output_2)
