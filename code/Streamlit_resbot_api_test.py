@@ -1,385 +1,184 @@
 # -*- coding: utf-8 -*-
 """
-updated on July 27 23:53:04 2026
-
 @author: BYERJ023
 """
 
 import requests
-#import datetime;
 from datetime import datetime
-#from dateutil.relativedelta import relativedelta
 import pytz
 import streamlit as st
 
-
-def get_values_from_nested_dict(response_dict):
-    values = []
-    for key, value in response_dict.items():
-        if isinstance(value, dict):
-            for inner_key, inner_value in value.items():
-                values.append(inner_value)
-        else:
-            values.append(value)
-    return values
+# --- NEW: Dynamic ID Lookup Function ---
+@st.cache_data
+def get_station_id(api_key, search_term):
+    """Automatically finds the Reserobot extId for a given station name."""
+    url = "https://api.resrobot.se/v2.1/location.name"
+    params = {
+        "input": search_term,
+        "format": "json",
+        "accessId": api_key
+    }
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        for item in data.get("stopLocationOrCoordLocation", []):
+            if "StopLocation" in item and "extId" in item["StopLocation"]:
+                return item["StopLocation"]["extId"]
+    return None
 
 st.title("Jess' departure board")
 
-# Define the API endpoint
-url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&id=740004121'
-#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&id=740009262'
-#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=120&id=740009262'
-#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=120&id=740021655'
-#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=20&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=60&id=740021655'
+API_KEY = "46f02d63-48e6-4529-8c2c-4b01befec633"
 
-# Send a GET request to the API
-response = requests.get(url)
+# Automatically find the ID for Midsommarkransen (Streamlit caches this so it only runs once!)
+tunnelbana_id = get_station_id(API_KEY, "Midsommarkransen")
+bus_id = "740051247" # We know this one is correct for Svandammsplan!
 
-# Check if the request was successful
-if response.status_code == 200:
-    # Parse the JSON data
-    data_skanstull = response.json()
-    data_skanstull_str = str(data_skanstull)
-    data_skanstull_str = data_skanstull_str.replace("'", '"')
-else:
-    print(f"Failed to fetch data. Status code: {response.status_code}")
-    st.error(f"Failed to fetch Tunnelbana data. API returned status: {response.status_code}")
-    st.stop()  # This safely halts the Streamlit app so it doesn't crash on line 50
+if not tunnelbana_id:
+    st.error("Could not dynamically find the Midsommarkransen ID. Check API status.")
+    st.stop()
 
-values = get_values_from_nested_dict(data_skanstull)
 
-#ct = datetime.now()
-#stockholm_time = ct + relativedelta(hours=2)
+# ==========================================
+# TIME AND HEADER
+# ==========================================
 stockholm_tz = pytz.timezone('Europe/Stockholm')
 now_in_stockholm = datetime.now(stockholm_tz)
 fmt = "%Y-%m-%d %H:%M"
-#print("Stockholm time now: ", now_in_stockholm.strftime(fmt))
 
-update_time_string = "Last updated: " + now_in_stockholm.strftime(fmt) + "      (Stockholm time)"
+update_time_string = f"Last updated: {now_in_stockholm.strftime(fmt)}      (Stockholm time)"
 html_str = f"""
     <style>
-    p.a {{
-      font-weight: bold;
-      color:green;
-      margin-left: 15px;
-    }}
-    p.b {{
-      margin-left: 30px;
-    }} 
-    p.c {{
-      font-style: italic;
-      margin-left: 30px;
-    }}                          
+    p.b {{ margin-left: 30px; }} 
+    p.c {{ font-style: italic; margin-left: 30px; }}                          
     </style>
     <p class="b">{update_time_string}</p>
     <p class="c">Refresh browser to update</p>
-    """
+"""
 st.markdown(html_str, unsafe_allow_html=True)
 
-data = data_skanstull
-#print(data)
 
+# ==========================================
+# TUNNELBANA SECTION (MIDSOMMARKRANSEN)
+# ==========================================
+url_tunnelbana = f"https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId={API_KEY}&id={tunnelbana_id}"
+response_tb = requests.get(url_tunnelbana)
 
-i=0
-num_trains = 0
-print(data['Departure'][i]['stop'])
-st.subheader(data['Departure'][i]['stop'].replace(" (Stockholm kn)",""))
-print("")
-#print('to T-Centralen')
-#st.markdown("##### to T-Centralen")
-print('Mot Mörby centrum / Ropsten')
-st.markdown("##### Mot Mörby centrum / Ropsten")
-
-for x in data['Departure']:
-    try:
-        if data['Departure'][i]['directionFlag'].strip() == '1':
-            if "Tunnelbana" in data['Departure'][i]['name']:
-                    cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '')
-                    cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
-                    temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
-                    temp_direction = data['Departure'][i]['direction']
-                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "")
-                    variable_output_2 = data['Departure'][i]['Product'][0]['operator'] + ' ' + data['Departure'][i]['Product'][0]['operatorCode']
-                    print(variable_output, end="   ")                   
-                    print(variable_output_2)
-                    print("")
-                    font_size = 14  #st.slider("Enter a font size", 1, 300, value=30)
-                    html_str = f"""
-                        <style>
-                        p.a {{
-                          font-weight: bold;
-                          color:green;
-                          margin-left: 15px;
-                        }}
-                        p.b {{
-                          margin-left: 30px;
-                        }}                       
-                        </style>
-                        <p class="a">{variable_output}</p>
-                        """
-                    st.markdown(html_str, unsafe_allow_html=True)
-                    #st.write("")
-                    num_trains = num_trains + 1
-    except:
-        pass
-    i = i + 1
-    
-if num_trains < 1:
-    #st.write("No trains at this time")
-    html_str = f"""
-        <style>
-        p.a {{
-          font-weight: bold;
-          color:green;
-          margin-left: 15px;
-        }}
-        p.b {{
-          margin-left: 30px;
-        }}
-        }}
-        p.c {{
-          margin-left: 15px;
-        }}                    
-        </style>
-        <p class="c">No trains at this time</p>
-    """
-    st.markdown(html_str, unsafe_allow_html=True)       
-    
-i=0
-num_trains = 0
-print("")
-#print('from city')
-#st.markdown("##### from city")
-print('Mot Fruängen')
-st.markdown("##### Mot Fruängen")
-
-for x in data['Departure']:
-    try:
-        if data['Departure'][i]['directionFlag'].strip() == '2':
-            if "Tunnelbana" in data['Departure'][i]['name']:
-                    cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '')
-                    cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
-                    temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
-                    temp_direction = data['Departure'][i]['direction']
-                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "")
-                    variable_output_2 = data['Departure'][i]['Product'][0]['operator'] + ' ' + data['Departure'][i]['Product'][0]['operatorCode']
-                    print(variable_output, end="   ")                   
-                    print(variable_output_2)
-                    print("")
-                    font_size = 14  #st.slider("Enter a font size", 1, 300, value=30)
-                    html_str = f"""
-                        <style>
-                        p.a {{
-                          font-weight: bold;
-                          color:green;
-                          margin-left: 15px;
-                        }}
-                        p.b {{
-                          margin-left: 30px;
-                        }}                          
-                        </style>
-                        <p class="a">{variable_output}</p>
-                        """
-                    st.markdown(html_str, unsafe_allow_html=True)
-                    #st.write("")
-                    num_trains = num_trains + 1
-    except:
-        pass
-    i = i + 1
-    
-if num_trains < 1:
-    #st.write("No trains at this time")
-    html_str = f"""
-        <style>
-        p.a {{
-          font-weight: bold;
-          color:green;
-          margin-left: 15px;
-        }}
-        p.b {{
-          margin-left: 30px;
-        }}
-        }}
-        p.c {{
-          margin-left: 15px;
-        }}                    
-        </style>
-        <p class="c">No trains at this time</p>
-    """
-    st.markdown(html_str, unsafe_allow_html=True)         
-
-
-# Define the API endpoint
-#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&id=740051247&id=740009262'
-# API Endpoint for Svandammsplan bus stop
-url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&id=740051247'
-#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&id=740046211&duration=60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633'
-#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=20&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=60&id=740021655'
-
-# Define the API endpoint
-#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duratoin-60&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=60&id=740021655'
-#url = 'https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=20&accessId=46f02d63-48e6-4529-8c2c-4b01befec633&duration=60&id=740021655'
-
-# Send a GET request to the API
-response = requests.get(url)
-
-# Check if the request was successful
-if response.status_code == 200:
-    # Parse the JSON data
-    data_skanstull = response.json()
-    # Convert dictionary to string
-    #print(data_skanstull)
-    data_skanstull_str = str(data_skanstull)
-    # Replace single quotes with double quotes
-    data_skanstull_str = data_skanstull_str.replace("'", '"')
-    #print(data_skanstull)
-
+if response_tb.status_code == 200:
+    data_tb = response_tb.json()
 else:
-    print("Failed to fetch data. Status code: {response.status_code}")
-    
+    st.error(f"Failed to fetch Tunnelbana data. Status code: {response_tb.status_code}")
+    st.stop()
 
-values = get_values_from_nested_dict(data_skanstull)
+# Header
+if data_tb.get('Departure'):
+    station_name = data_tb['Departure'][0]['stop'].replace(" (Stockholm kn)", "")
+    st.subheader(station_name)
 
-data = data_skanstull
-#print(data)
-
-
-i=0
+# --- Tunnelbana Direction 1 ---
+st.markdown("##### Mot Mörby centrum / Ropsten")
 num_trains = 0
-try:
-    #print(data['Departure'][i]['stop'])
-    #st.subheader(data['Departure'][i]['stop'])
-    #print("Nätgränd (Stockholm kn)")
-    print("Svandammsplan (Stockholm kn)")
-    #st.subheader("Nätgränd busshållplats")
-    st.subheader("Svandammsplan busshållplats")
-    #print("")
-    print('Direction 1')
-    #st.markdown("##### österutto to Tengdahisgatan")
-    st.markdown("##### Mot Liljeholmen")
-except:
-    ""
+for train in data_tb.get('Departure', []):
+    name = train.get('name', '')
+    direction = train.get('direction', '')
+    direction_flag = str(train.get('directionFlag', '')).strip()
 
-for x in data['Departure']:
-    try:
-        if data['Departure'][i]['directionFlag'] == '1':
-            if "Buss" in data['Departure'][i]['name']:
-                    cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '')
-                    cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
-                    temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
-                    temp_direction = data['Departure'][i]['direction']
-#                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace('Stockholm Tengdahlsgatan','österut').replace('Motalavägen','väster')
-                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "")
-                    variable_output_2 = data['Departure'][i]['Product'][0]['operator'] + ' ' + data['Departure'][i]['Product'][0]['operatorCode']
-                    print(variable_output, end="   ")                   
-                    print(variable_output_2)
-                    print("")
-                    #font_size = 14  #st.slider("Enter a font size", 1, 300, value=30)
-                    html_str = f"""
-                        <style>
-                        p.a {{
-                          font-weight: bold;
-                          color:green;
-                          margin-left: 15px;
-                        }}
-                        p.b {{
-                          margin-left: 30px;
-                        }}                          
-                        </style>
-                        <p class="a">{variable_output}</p>
-                        """
-                    st.markdown(html_str, unsafe_allow_html=True)
-                    #st.write("")
-                    num_trains = num_trains + 1
-    except:
-        pass
-    i = i + 1
-    
+    if "Tunnelbana" in name and direction_flag == '1':
+        cleaned_tunnelbana = name.replace('Länstrafik -', '')
+        cleaned_time = train.get('time', '').removesuffix(':00')
+        clean_dir = direction.replace(" (Stockholm kn)", "")
+        
+        variable_output = f"{cleaned_time}    {cleaned_tunnelbana} - {clean_dir}"
+        
+        html_str = f'<p style="font-weight: bold; color:green; margin-left: 15px;">{variable_output}</p>'
+        st.markdown(html_str, unsafe_allow_html=True)
+        num_trains += 1
+        
 if num_trains < 1:
-    #st.write("No Buss data available")   
-    html_str = f"""
-        <style>
-        p.a {{
-          font-weight: bold;
-          color:green;
-          margin-left: 15px;
-        }}
-        p.b {{
-          margin-left: 30px;
-        }}
-        }}
-        p.c {{
-          margin-left: 15px;
-        }}                    
-        </style>
-        <p class="c">No Buss data available</p>
-    """
-    st.markdown(html_str, unsafe_allow_html=True)
-    
-     
-#print("Nätgränd")
-print("Svandammsplan (Stockholm kn)")
-print("")
-print('Direction 2')
-#st.markdown("##### väster to Motalavägen")
+    st.markdown('<p style="margin-left: 15px; font-style: italic;">No trains at this time</p>', unsafe_allow_html=True)
+
+
+# --- Tunnelbana Direction 2 ---
+st.markdown("##### Mot Fruängen")
+num_trains_2 = 0
+for train in data_tb.get('Departure', []):
+    name = train.get('name', '')
+    direction = train.get('direction', '')
+    direction_flag = str(train.get('directionFlag', '')).strip()
+
+    if "Tunnelbana" in name and direction_flag == '2':
+        cleaned_tunnelbana = name.replace('Länstrafik -', '')
+        cleaned_time = train.get('time', '').removesuffix(':00')
+        clean_dir = direction.replace(" (Stockholm kn)", "")
+        
+        variable_output = f"{cleaned_time}    {cleaned_tunnelbana} - {clean_dir}"
+        
+        html_str = f'<p style="font-weight: bold; color:green; margin-left: 15px;">{variable_output}</p>'
+        st.markdown(html_str, unsafe_allow_html=True)
+        num_trains_2 += 1
+        
+if num_trains_2 < 1:
+    st.markdown('<p style="margin-left: 15px; font-style: italic;">No trains at this time</p>', unsafe_allow_html=True)
+
+
+# ==========================================
+# BUS SECTION (SVANDAMMSPLAN)
+# ==========================================
+url_bus = f"https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId={API_KEY}&id={bus_id}"
+response_bus = requests.get(url_bus)
+
+if response_bus.status_code == 200:
+    data_bus = response_bus.json()
+else:
+    st.error(f"Failed to fetch Bus data. Status code: {response_bus.status_code}")
+    st.stop()
+
+st.subheader("Svandammsplan busshållplats")
+
+# --- Bus Direction 1 ---
+st.markdown("##### Mot Liljeholmen")
+num_buses_1 = 0
+for bus in data_bus.get('Departure', []):
+    name = bus.get('name', '')
+    direction = bus.get('direction', '')
+    direction_flag = str(bus.get('directionFlag', '')).strip()
+
+    if "Buss" in name and direction_flag == '1':
+        cleaned_buss = name.replace('Länstrafik -', '')
+        cleaned_time = bus.get('time', '').removesuffix(':00')
+        clean_dir = direction.replace(" (Stockholm kn)", "")
+        
+        variable_output = f"{cleaned_time}    {cleaned_buss} - {clean_dir}"
+        
+        html_str = f'<p style="font-weight: bold; color:green; margin-left: 15px;">{variable_output}</p>'
+        st.markdown(html_str, unsafe_allow_html=True)
+        num_buses_1 += 1
+        
+if num_buses_1 < 1:
+    st.markdown('<p style="margin-left: 15px; font-style: italic;">No Buss data available</p>', unsafe_allow_html=True)
+
+
+# --- Bus Direction 2 ---
 st.markdown("##### Mot Hökmossen / Älvsjö")
-i=0
-num_trains = 0
-for x in data['Departure']:
-    try:
-        if data['Departure'][i]['directionFlag'].strip() == '2':
-            if "Buss" in data['Departure'][i]['name']:
-                    cleaned_tunnelbana = data['Departure'][i]['name'].replace('Länstrafik -', '')
-                    cleaned_time = data['Departure'][i]['time'].removesuffix(':00')
-                    temp_direction_flag = data['Departure'][i]['directionFlag'].strip()
-                    temp_direction = data['Departure'][i]['direction']
-                    #variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "").replace('Stockholm Tengdahlsgatan','österut').replace('Motalavägen','väster')
-                    variable_output = cleaned_time + '    ' + cleaned_tunnelbana + ' - ' + data['Departure'][i]['direction'].replace(" (Stockholm kn)", "")
-                    variable_output_2 = data['Departure'][i]['Product'][0]['operator'] + ' ' + data['Departure'][i]['Product'][0]['operatorCode']
-                    print(variable_output, end="   ")                   
-                    print(variable_output_2)
-                    print("")
-                    font_size = 14  #st.slider("Enter a font size", 1, 300, value=30)
-                    html_str = f"""
-                        <style>
-                        p.a {{
-                          font-weight: bold;
-                          color:green;
-                          margin-left: 15px;
-                        }}
-                        p.b {{
-                          margin-left: 30px;
-                        }}                          
-                        </style>
-                        <p class="a">{variable_output}</p>
-                        """
-                    st.markdown(html_str, unsafe_allow_html=True)
-                    #st.write("")
-                    num_trains = num_trains + 1
-    except:
-        pass
-    i = i + 1
-    
-if num_trains < 1:
-    #st.write("No Buss data available")    
-    html_str = f"""
-        <style>
-        p.a {{
-          font-weight: bold;
-          color:green;
-          margin-left: 15px;
-        }}
-        p.b {{
-          margin-left: 30px;
-        }}
-        }}
-        p.c {{
-          margin-left: 15px;
-        }}                    
-        </style>
-        <p class="c">No Buss data available</p>
-     """
-    st.markdown(html_str, unsafe_allow_html=True)
+num_buses_2 = 0
+for bus in data_bus.get('Departure', []):
+    name = bus.get('name', '')
+    direction = bus.get('direction', '')
+    direction_flag = str(bus.get('directionFlag', '')).strip()
+
+    if "Buss" in name and direction_flag == '2':
+        cleaned_buss = name.replace('Länstrafik -', '')
+        cleaned_time = bus.get('time', '').removesuffix(':00')
+        clean_dir = direction.replace(" (Stockholm kn)", "")
+        
+        variable_output = f"{cleaned_time}    {cleaned_buss} - {clean_dir}"
+        
+        html_str = f'<p style="font-weight: bold; color:green; margin-left: 15px;">{variable_output}</p>'
+        st.markdown(html_str, unsafe_allow_html=True)
+        num_buses_2 += 1
+        
+if num_buses_2 < 1:
+    st.markdown('<p style="margin-left: 15px; font-style: italic;">No Buss data available</p>', unsafe_allow_html=True)
 
     
 
