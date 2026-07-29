@@ -124,7 +124,7 @@ if num_trains_2 < 1:
 # ==========================================
 # BUS SECTION (SVANDAMMSPLAN)
 # ==========================================
-url_bus = f"https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=60&accessId={API_KEY}&id={bus_id}"
+url_bus = f"https://api.resrobot.se/v2.1/departureBoard?format=json&maxJourneys=10&duration=120&accessId={API_KEY}&id={bus_id}"
 response_bus = requests.get(url_bus)
 
 if response_bus.status_code == 200:
