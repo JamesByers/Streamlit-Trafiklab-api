@@ -14,10 +14,21 @@ jobs:
         with:
           python-version: '3.10'
           
-      - name: Install Playwright
-        run: |
-          pip install playwright
-          playwright install chromium
+      - name: Install Playwright package
+        run: pip install playwright
+        
+      # --- NEW: Check GitHub Cache for the Browser ---
+      - name: Cache Playwright Browsers
+        id: cache-playwright
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-chromium
+          
+      # --- NEW: Only download if it wasn't in the cache ---
+      - name: Install Chromium binary
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
+        run: playwright install chromium
           
       - name: Ping with Headless Browser
         run: |
@@ -33,16 +44,13 @@ jobs:
               start_time = time.time()
               
               try:
-                  # This waits until all background network/websocket requests settle
                   page.goto('https://app-trafiklab-api-6mmxjd7mslxhtojzu7fv2d.streamlit.app/', wait_until='networkidle', timeout=60000)
-                  
                   load_time = time.time() - start_time
                   print(f'SUCCESS: App responded and fully loaded in {load_time:.2f} seconds!')
               except Exception as e:
                   load_time = time.time() - start_time
                   print(f'WARNING: Timed out after {load_time:.2f} seconds. Error: {e}')
               
-              # Keep it open a few extra seconds to ensure the backend script fully runs
               time.sleep(5)
               browser.close()
           "
