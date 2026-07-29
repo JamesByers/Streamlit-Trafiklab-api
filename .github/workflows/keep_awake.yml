@@ -31,7 +31,7 @@ jobs:
               page = browser.new_page()
               
               # Replace with your actual Streamlit URL
-              page.goto('https://YOUR-APP-URL.streamlit.app')
+              page.goto('https://app-trafiklab-api-6mmxjd7mslxhtojzu7fv2d.streamlit.app/')
               
               # Wait 10 seconds to ensure the WebSocket fully connects and the Python script runs
               time.sleep(10) 
