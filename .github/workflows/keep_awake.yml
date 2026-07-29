@@ -33,7 +33,7 @@ jobs:
               start_time = time.time()
               
               # Replace with your actual Streamlit URL
-              page.goto('https://YOUR-APP-URL.streamlit.app')
+              page.goto('https://app-trafiklab-api-6mmxjd7mslxhtojzu7fv2d.streamlit.app/')
               
               # Wait for Streamlit's main app container or connection element to load
               try:
