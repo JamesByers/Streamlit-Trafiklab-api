@@ -32,18 +32,15 @@ jobs:
               print('Sending request to app...')
               start_time = time.time()
               
-              # Replace with your actual Streamlit URL
-              page.goto('https://app-trafiklab-api-6mmxjd7mslxhtojzu7fv2d.streamlit.app/')
-              
-              # Wait for Streamlit's main app container or connection element to load
               try:
-                  # This waits until the page finishes its initial load and WebSocket connects
-                  page.wait_for_selector('div.stApp', timeout=60000)
+                  # This waits until all background network/websocket requests settle
+                  page.goto('https://app-trafiklab-api-6mmxjd7mslxhtojzu7fv2d.streamlit.app/', wait_until='networkidle', timeout=60000)
+                  
                   load_time = time.time() - start_time
                   print(f'SUCCESS: App responded and fully loaded in {load_time:.2f} seconds!')
               except Exception as e:
                   load_time = time.time() - start_time
-                  print(f'WARNING: Timed out or took too long. Elapsed: {load_time:.2f} seconds. Error: {e}')
+                  print(f'WARNING: Timed out after {load_time:.2f} seconds. Error: {e}')
               
               # Keep it open a few extra seconds to ensure the backend script fully runs
               time.sleep(5)
