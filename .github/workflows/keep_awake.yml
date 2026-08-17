@@ -10,25 +10,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           
       - name: Install Playwright package
         run: pip install playwright
         
-      # --- NEW: Check GitHub Cache for the Browser ---
       - name: Cache Playwright Browsers
         id: cache-playwright
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-chromium
           
-      # --- NEW: Only download if it wasn't in the cache ---
       - name: Install Chromium binary
         if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: playwright install chromium
+
+      # ALWAYS install Linux system dependencies, even if browser binary is cached
+      - name: Install Playwright System Dependencies
+        run: playwright install-deps chromium
           
       - name: Ping with Headless Browser
         run: |
@@ -36,21 +38,35 @@ jobs:
           from playwright.sync_api import sync_playwright
           import time
 
+          url = 'https://app-trafiklab-api-6mmxjd7mslxhtojzu7fv2d.streamlit.app/'
+
           with sync_playwright() as p:
-              browser = p.chromium.launch()
+              browser = p.chromium.launch(headless=True)
               page = browser.new_page()
               
               print('Sending request to app...')
               start_time = time.time()
               
               try:
-                  page.goto('https://app-trafiklab-api-6mmxjd7mslxhtojzu7fv2d.streamlit.app/', wait_until='networkidle', timeout=60000)
+                  # Use domcontentloaded to avoid hanging on long-polling WebSocket connections
+                  page.goto(url, wait_until='domcontentloaded', timeout=60000)
+                  
+                  # Check if Streamlit sleep screen is active and click the wake button
+                  wake_button = page.locator('button:has-text(\"Yes, get this app back up!\")')
+                  if wake_button.is_visible(timeout=5000):
+                      print('App is currently asleep. Clicking wake button...')
+                      wake_button.click()
+                      page.wait_for_timeout(10000)
+                  else:
+                      print('App is online. Waiting for WebSocket handshake...')
+                      page.wait_for_timeout(5000)
+                  
                   load_time = time.time() - start_time
-                  print(f'SUCCESS: App responded and fully loaded in {load_time:.2f} seconds!')
+                  print(f'SUCCESS: App responded in {load_time:.2f} seconds!')
               except Exception as e:
                   load_time = time.time() - start_time
-                  print(f'WARNING: Timed out after {load_time:.2f} seconds. Error: {e}')
-              
-              time.sleep(5)
-              browser.close()
+                  print(f'WARNING: Script failed after {load_time:.2f} seconds. Error: {e}')
+                  raise e
+              finally:
+                  browser.close()
           "
